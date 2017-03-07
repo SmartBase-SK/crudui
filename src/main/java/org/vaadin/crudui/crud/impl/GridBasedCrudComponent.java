@@ -2,10 +2,8 @@ package org.vaadin.crudui.crud.impl;
 
 import com.vaadin.data.provider.Query;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.*;
+import com.vaadin.ui.components.grid.HeaderRow;
 import org.vaadin.crudui.crud.AbstractCrudComponent;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.CrudOperationException;
@@ -14,6 +12,10 @@ import org.vaadin.crudui.layout.CrudLayout;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Alejandro Duarte
@@ -30,6 +32,8 @@ public class GridBasedCrudComponent<T> extends AbstractCrudComponent<T> {
     private Button updateButton;
     private Button deleteButton;
     private Grid<T> grid = new Grid<>();
+    private Set<Predicate<T>> filters = new HashSet<>();
+    private HeaderRow filterRow;
 
     Collection<T> items;
 
@@ -97,7 +101,9 @@ public class GridBasedCrudComponent<T> extends AbstractCrudComponent<T> {
     }
 
     public void refreshGrid() {
-        items = findAllOperation.findAll();
+        items = findAllOperation.findAll().stream()
+                .filter(item -> filters.stream().allMatch(filter -> filter.test(item)))
+                .collect(Collectors.toList());
         grid.setItems(items);
     }
 
@@ -188,6 +194,25 @@ public class GridBasedCrudComponent<T> extends AbstractCrudComponent<T> {
                 });
 
         crudLayout.showForm(operation, form);
+    }
+
+    public void addFilter(Grid.Column column, Predicate<T> filter) {
+        if (filterRow == null) {
+            filterRow = grid.appendHeaderRow();
+        }
+        filterRow.getCell(column).setComponent(buildFilterField());
+        filters.add(filter);
+    }
+
+    protected AbstractField buildFilterField() {
+        TextField filterField = new TextField();
+        filterField.setSizeFull();
+        filterField.addValueChangeListener(event -> refreshGrid());
+        return filterField;
+    }
+
+    public AbstractField getFilterField(Grid.Column column) {
+        return (AbstractField) filterRow.getCell(column).getComponent();
     }
 
     public Grid<T> getGrid() {
