@@ -11,14 +11,14 @@ import java.util.Map;
 /**
  * @author Alejandro Duarte.
  */
-public class CrudFormConfiguration implements Serializable {
+public class CrudFormConfiguration<T> implements Serializable {
 
     protected List<String> visibleProperties = new ArrayList<>();
     protected List<String> disabledProperties = new ArrayList<>();
     protected List<String> fieldCaptions = new ArrayList<>();
     protected Map<Object, Class<? extends HasValue>> fieldTypes = new HashMap<>();
     protected Map<Object, FieldCreationListener> fieldCreationListeners = new HashMap<>();
-    protected Map<Object, FieldProvider> fieldProviders = new HashMap<>();
+    protected Map<Object, FieldProvider<T>> fieldProviders = new HashMap<>();
 
     public List<String> getVisibleProperties() {
         return visibleProperties;
@@ -60,11 +60,11 @@ public class CrudFormConfiguration implements Serializable {
         this.fieldCreationListeners = fieldCreationListeners;
     }
 
-    public Map<Object, FieldProvider> getFieldProviders() {
+    public Map<Object, FieldProvider<T>> getFieldProviders() {
         return fieldProviders;
     }
 
-    public void setFieldProviders(Map<Object, FieldProvider> fieldProviders) {
+    public void setFieldProviders(Map<Object, FieldProvider<T>> fieldProviders) {
         this.fieldProviders = fieldProviders;
     }
 

@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public abstract class AbstractCrudFormFactory<T> implements CrudFormFactory<T> {
 
-    protected Map<CrudOperation, CrudFormConfiguration> configurations = new HashMap<>();
+    protected Map<CrudOperation, CrudFormConfiguration<T>> configurations = new HashMap<>();
 
     @Override
     public void setVisibleProperties(CrudOperation operation, String... properties) {
@@ -65,17 +65,17 @@ public abstract class AbstractCrudFormFactory<T> implements CrudFormFactory<T> {
     }
 
     @Override
-    public void setFieldProvider(CrudOperation operation, String property, FieldProvider provider) {
+    public void setFieldProvider(CrudOperation operation, String property, FieldProvider<T> provider) {
         getConfiguration(operation).getFieldProviders().put(property, provider);
     }
 
     @Override
-    public void setFieldProvider(String property, FieldProvider provider) {
+    public void setFieldProvider(String property, FieldProvider<T> provider) {
         Arrays.stream(CrudOperation.values()).forEach(operation -> setFieldProvider(operation, property, provider));
     }
 
-    protected CrudFormConfiguration getConfiguration(CrudOperation operation) {
-        configurations.putIfAbsent(operation, new CrudFormConfiguration());
+    protected CrudFormConfiguration<T> getConfiguration(CrudOperation operation) {
+        configurations.putIfAbsent(operation, new CrudFormConfiguration<>());
         return configurations.get(operation);
     }
 

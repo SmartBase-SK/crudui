@@ -65,13 +65,13 @@ public class TestUI extends UI implements CrudListener<User> {
         GridBasedCrudComponent<User> crud = new GridBasedCrudComponent<>(User.class);
         crud.setCrudListener(this);
 
-        crud.getCrudFormFactory().setFieldProvider("groups", () -> {
+        crud.getCrudFormFactory().setFieldProvider("groups", (object) -> {
             CheckBoxGroup<Group> checkBoxes = new CheckBoxGroup("Groups", groups);
             checkBoxes.setItemCaptionGenerator(Group::getName);
             return checkBoxes;
         });
 
-        crud.getCrudFormFactory().setFieldProvider("mainGroup", () -> {
+        crud.getCrudFormFactory().setFieldProvider("mainGroup", (object) -> {
             ComboBox<Group> comboBox = new ComboBox<>("Main group", groups);
             comboBox.setItemCaptionGenerator(Group::getName);
             return comboBox;
@@ -98,12 +98,12 @@ public class TestUI extends UI implements CrudListener<User> {
 
         formFactory.setFieldType("password", PasswordField.class);
         formFactory.setFieldCreationListener("birthDate", field -> ((DateField) field).setDateFormat("yyyy-MM-dd"));
-        formFactory.setFieldProvider("groups", () -> {
+        formFactory.setFieldProvider("groups", (object) -> {
             CheckBoxGroup<Group> checkboxes = new CheckBoxGroup<>("Groups", groups);
             checkboxes.setItemCaptionGenerator(Group::getName);
             return checkboxes;
         });
-        formFactory.setFieldProvider("mainGroup", () -> {
+        formFactory.setFieldProvider("mainGroup", (object) -> {
             ComboBox<Group> comboBox = new ComboBox<>("Main group", groups);
             comboBox.setItemCaptionGenerator(Group::getName);
             return comboBox;

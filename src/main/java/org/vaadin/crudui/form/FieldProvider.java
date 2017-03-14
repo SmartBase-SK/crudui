@@ -8,8 +8,8 @@ import java.io.Serializable;
  * @author Alejandro Duarte.
  */
 @FunctionalInterface
-public interface FieldProvider extends Serializable {
+public interface FieldProvider<T> extends Serializable {
 
-    HasValue buildField();
+    HasValue buildField(T domainObject);
 
 }
